@@ -11,70 +11,23 @@ driver = webdriver.Chrome(service=Service(
 
 
 
-url = 'https://namu.wiki/w/Pixelmon'
+url = 'https://www.naver.com/'
 driver.get(url)             # 해당 url로 접속
-driver.implicitly_wait(3)   # 인터넷정보 다 다운받을때까지 대기(초)
+driver.implicitly_wait(3)   # 대기(초)
 
+ID = 'leap_second@naver.com'
+PW = 'leap_second333!'
 
-source_data = driver.page_source
-for i in range(3):
-    
+login_button = driver.find_element(By.CLASS_NAME, 'link_login')
+login_button.click()
 
+driver.implicitly_wait(3)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+login = driver.find_element(By.ID, 'id')
+login.clear()
+login.send_keys(ID)
+login = driver.find_element(By.ID, 'pw')
+login.clear()
+login.send_keys(PW)
+login.send_keys(Keys.ENTER)
+driver.implicitly_wait(3)   # 대기(초)
