@@ -41,15 +41,15 @@ class Stone(Animation):
 
         if pos[0] > space[0] or pos[1] > space[1]:
             self.state = STONE_READY
-            decrement_stone()
+            decrement_stones()
 
-        # 투석 위치 계산
-        def calculate_position(self, t, g, direction):
-            r = math.radians(direction)
-            x = self.power*math.cos(r)*t
-            y = slef.power*math.sin(r)*t - 0.5*g*math.pow(t, 2)
+    # 투석 위치 계산
+    def calculate_position(self, t, g, direction):
+        r = math.radians(direction)
+        x = self.power*math.cos(r)*t
+        y = self.power*math.sin(r)*t - 0.5*g*math.pow(t, 2)
 
-            return (int(x), int(y))
+        return (int(x), int(y))
 
     # 투석의 위치를 화면 좌표에 맞게 변환
     def map_position(self, x, y, new_x, new_y):

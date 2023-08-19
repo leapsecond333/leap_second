@@ -17,6 +17,6 @@ class Explosion(Animation):
             self.kill()
 
         rect = (self.sprite_width*self.current_frame, 0,
-                self.current_width, self.sprite_height)
-        self.image.blit( slef.sprite_sheet, (0, 0), rect)
+                self.sprite_width, self.sprite_height)
+        self.image.blit( self.sprite_sheet, (0, 0), rect)
         self.image.set_colorkey(Color(255, 0, 255))

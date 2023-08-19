@@ -7,11 +7,13 @@ from pygame.sprite import Sprite
 from catapult import Catapult
 from stone import Stone
 from alien import Alien
-from explosion import Explosion
+from explosion import Explosion 
 from const import *
 
 FPS = 60
 stone_count = 3
+alien_life = 3
+hit_tick = 0
 
 def decrement_stones():
     global stone_count
@@ -93,6 +95,7 @@ if __name__ == "__main__":
                             t = 0
                             catapult.fire(power, direction)
                             fire_sound.play()
+                            
         if game_state == GAME_PLAY:
             # 누르고 있는 키 확인하기.
             keys = pygame.key.get_pressed()
@@ -101,14 +104,14 @@ if __name__ == "__main__":
             elif keys[pygame.K_RIGHT]:
                 catapult.forward()
             elif keys[pygame.K_UP]:
-                if direction > MAX_DIRECTION:
+                if direction < MAX_DIRECTION:
                     direction += 1
             elif keys[pygame.K_DOWN]:
                 if direction > MIN_DIRECTION:
                     direction -= 1
             elif keys[pygame.K_SPACE]:
                 if power > MAX_POWER:
-                    power = MIN_POEWR
+                    power = MIN_POWER
                 else:
                     power += 0.2
 
@@ -119,7 +122,7 @@ if __name__ == "__main__":
                        (screen.get_width(), screen.get_height()),
                        decrement_stones)
 
-        if alien.alive():
+        if alien.alive() and alien_life == 0:
             collided = pygame.sprite.groupcollide(
                 stone_group, alien_group, False, True)
             if collided:
@@ -130,8 +133,14 @@ if __name__ == "__main__":
                                  (alien.rect.y + alien.rect.height/2) - \
                                  explosion.rect.height/2
                 crash_sound.play()
+        elif alien.alive() and alien_life != 0:
+            collided = pygame.sprite.groupcollide(
+                stone_group, alien_group, False, False)
+            if collided:
+                alien_life -= 1
+                
 
-        elif not explsion.alive():
+        elif not explosion.alive():
             # 외계인도 죽도 폭발 애니메이션도 끝났을 때.
             game_state = GAME_CLEAR
 
@@ -178,7 +187,7 @@ if __name__ == "__main__":
                     pos1[1] - math.sin(r)*line_len)
             draw.line(screen,Color(255, 0, 0), pos1, pos2)
 
-            #파워와 각도를 선으로 표현.
+            # 파워와 각도를 선으로 표현.
             sf = pygame.font.SysFont("Arial", 15)
             text = sf.render("{0} ˚, {1} m/s".
                              format(direction, int(power)), True, (0,0,0))
@@ -190,6 +199,12 @@ if __name__ == "__main__":
                              format(stone_count),  True, (0,0,255))
             screen.blit(text, (10, 10))
 
+            # 외계인의 목숨을 표시
+            sf = pygame.font.SysFont("Monospace", 20)
+            text = sf.render("Alien's life : {0}".
+                             format(alien_life),  True, (0,0,255))
+            screen.blit(text, (screen.get_width()/2 - 10, 10))
+
             if not alien.alive():
                 explosion_group.update()
                 explosion_group.draw(screen)
@@ -198,7 +213,8 @@ if __name__ == "__main__":
             # 게임 클리어
             sf = pygame.font.SysFont("Arial", 20, bold=True)
             title_str = "Congratulations! Mission Complete"
-            tilte_size = sf.size(title_str)
+            title = sf.render(title_str, True, (0,0,255))
+            title_size = sf.size(title_str)
             title_pos = (screen.get_width()/2 - title_size[0]/2, 100)
             screen.blit(title, title_pos)
 
