@@ -3,7 +3,6 @@ from pygame.color import Color
 from pygame.sprite import Sprite
 from pygame.surface import Surface
 from runner import Runner
-import time
 
 FPS = 28
 
@@ -15,6 +14,7 @@ F = 0
 
 
 heading = None
+flying = "No"
 
 
 class Bullet(Sprite):
@@ -28,6 +28,7 @@ class Bullet(Sprite):
 
     def update(self):
         self.rect.x -= 6
+        
 
 if __name__ == "__main__":
     pygame.init()
@@ -83,17 +84,27 @@ if __name__ == "__main__":
         pygame.display.flip()
 
 
-        # 점프 (최고점에 다가갈 수록 느려지게 만드는 중)
-        if key == pygame.K_UP:
+        # 점프 (최고점에 다가갈 수록 느려지게 만드는 중 <== 성공)
+        if key == pygame.K_UP and flying == "No" and heading == None:
             heading = "up"
         if heading == "up":
-            runner1.rect.y -= F / 100
-            F = 1/2 * m * v * v
+            runner1.rect.y += F / 100
+            F = -1/2 * m * v * v
             v -= 1
             if runner1.rect.y <= 50:
                 heading = "down"
                 F = 0
                 v = 0
+        # 위쪽 화살표를 누르고 있으면 하강 천천히 하게 만들기
+        if heading == "down" and key == pygame.K_UP:
+            flying = "Yes"
+        if flying == "Yes":
+            runner1.rect.y -= 5
+            
+            
+        if flying == "Yes" and key == None:
+            flying = "No"
+              
         if heading == "down":
             runner1.rect.y += F / 100
             F = 1/2 * m * v * v
@@ -102,7 +113,8 @@ if __name__ == "__main__":
                 heading = None
                 F = 0
                 v = 10
-        print(F, "=", m, "*", v)
+                runner1.rect.y = 170.0
+        print(F, "=", "0.5", "*", m, "*", v, "*", v, " ", "플레이어 높이 = ", runner1.rect.y)
             
 
         clock.tick(FPS)

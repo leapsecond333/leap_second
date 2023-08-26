@@ -11,7 +11,7 @@ from explosion import Explosion
 from const import *
 
 FPS = 60
-stone_count = 3
+stone_count = 6
 alien_life = 3
 hit_tick = 0
 
@@ -123,6 +123,7 @@ if __name__ == "__main__":
                        decrement_stones)
 
         if alien.alive() and alien_life == 0:
+            print('에일리언 죽음')
             collided = pygame.sprite.groupcollide(
                 stone_group, alien_group, False, True)
             if collided:
@@ -135,13 +136,16 @@ if __name__ == "__main__":
                 crash_sound.play()
         elif alien.alive() and alien_life != 0:
             collided = pygame.sprite.groupcollide(
-                stone_group, alien_group, False, False)
+                stone_group, alien_group, True, False)
             if collided:
                 alien_life -= 1
+            if stone.rect.x > alien.rect.x + 32:
+                stone_group.add(stone)
+                
                 
 
         elif not explosion.alive():
-            # 외계인도 죽도 폭발 애니메이션도 끝났을 때.
+            # 외계인도 죽고 폭발 애니메이션도 끝났을 때.
             game_state = GAME_CLEAR
 
         # 외계인이 살아 있는데 돌멩이 수가 0이면 게임 오버.
